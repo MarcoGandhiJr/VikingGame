@@ -2,6 +2,12 @@ package xavierdufour;
 
 import xavierdufour.engine.Buffer;
 import xavierdufour.engine.Game;
+import xavierdufour.engine.RenderingEngine;
+import xavierdufour.engine.Sound;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class VikingGame extends Game {
 
@@ -9,6 +15,7 @@ public class VikingGame extends Game {
     private Player player;
     private World world;
     private Tree tree;
+    private int soundCooldown;
 
     public VikingGame() {
         gamePad = new GamePad();
@@ -24,6 +31,14 @@ public class VikingGame extends Game {
         player.update();
         if (gamePad.isQuitPressed()) {
             super.stop();
+        }
+        soundCooldown--;
+        if (soundCooldown < 0) {
+            soundCooldown = 0;
+        }
+        if (gamePad.isFirePressed() && soundCooldown == 0) {
+            soundCooldown = 40;
+            Sound.play("sounds/best.wav");
         }
         if (player.getY() < tree.getY() + 52) {
             tree.blockadeFromTop();
@@ -53,6 +68,19 @@ public class VikingGame extends Game {
 
     @Override
     public void initialize() {
+        RenderingEngine.getInstance().getScreen().hideCursor();
+        RenderingEngine.getInstance().getScreen().fullScreen();
 
+        try {
+            Clip clip = AudioSystem.getClip();
+            AudioInputStream inputStream = AudioSystem.getAudioInputStream(
+                    this.getClass().getClassLoader().getResourceAsStream("musics/map.wav")
+            );
+            clip.open(inputStream);
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

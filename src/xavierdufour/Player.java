@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class Player extends ControllableEntity {
 
-    private static final String SPRITE_PATH = "images/player.png";
+    private static final String SPRITE_PATH = "images/playerSheet.png";
     private static final int ANIMATION_SPEED = 8;
     private static final int IDLE_FRAME = 1;
     private BufferedImage spriteSheet;
